@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitForce Gym</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Segoe UI', sans-serif; background: #0d0d0d; color: #fff; overflow-x: hidden; }
+  :root { --green: #7FFF00; --green-dark: #5cbd00; --dark: #0d0d0d; --dark2: #141414; --dark3: #1a1a1a; --gray: #888; }
+
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1rem 3rem; background: rgba(13,13,13,0.92); backdrop-filter: blur(10px);
+    border-bottom: 1px solid #1f1f1f;
+  }
+  .logo { font-size: 1.5rem; font-weight: 800; letter-spacing: 1px; }
+  .logo span { color: var(--green); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { color: #ccc; text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+  .nav-links a:hover, .nav-links a.active { color: var(--green); }
+  .nav-right { display: flex; gap: 1rem; align-items: center; }
+  .btn-outline { background: transparent; border: 1.5px solid var(--green); color: var(--green); padding: 0.5rem 1.4rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; }
+  .btn-outline:hover { background: var(--green); color: #000; }
+  .btn-green { background: var(--green); border: none; color: #000; padding: 0.55rem 1.4rem; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 0.85rem; transition: all 0.2s; }
+  .btn-green:hover { background: var(--green-dark); }
+
+  /* HERO - MODIFIED FOR RIGHT ALIGNMENT */
+  .hero {
+    min-height: 100vh; 
+    display: flex; 
+    align-items: center;
+    justify-content: flex-end; /* Pushes content to the right */
+    padding: 7rem 3rem 3rem; 
+    position: relative; 
+    overflow: hidden;
+    background: linear-gradient(135deg, #0d0d0d 55%, #0f1f00 100%);
+  }
+  .hero-content { 
+    max-width: 550px; 
+    z-index: 2; 
+    margin-right: 5%; /* Adjust this percentage to move it more or less to the right */
+  }
+  .hero-badge { display: inline-block; background: var(--green); color: #000; font-size: 0.7rem; font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 3px; margin-bottom: 1.2rem; letter-spacing: 1px; }
+  .hero h1 { font-size: 4.5rem; font-weight: 900; line-height: 1; margin-bottom: 0.5rem; }
+  .hero h1 span { color: var(--green); }
+  .hero p { color: #aaa; font-size: 1rem; line-height: 1.7; margin: 1.2rem 0 2rem; max-width: 420px; }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-main { background: var(--green); color: #000; border: none; padding: 0.8rem 2rem; border-radius: 4px; font-weight: 700; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+  .btn-main:hover { background: var(--green-dark); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; color: #fff; border: 1.5px solid #444; padding: 0.8rem 2rem; border-radius: 4px; font-size: 1rem; cursor: pointer; transition: all 0.2s; }
+  .btn-ghost:hover { border-color: var(--green); color: var(--green); }
+
+  /* Updated Hero Image to not conflict with right-aligned text */
+  .hero-image {
+    position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+    width: 60%; height: 90vh; overflow: hidden;
+    z-index: 1;
+  }
+  .hero-image img, .hero-image video { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+  .hero-image::after {
+    content: ''; position: absolute; right: 0; top: 0; width: 50%; height: 100%;
+    background: linear-gradient(to left, #0d0d0d, transparent); z-index: 1;
+  }
+
+  .hero-stats { display: flex; gap: 3rem; margin-top: 3rem; }
+  .stat h3 { font-size: 2rem; font-weight: 800; color: var(--green); }
+  .stat p { font-size: 0.8rem; color: #888; }
+
+  /* BRANDS */
+  .brands { background: var(--dark2); padding: 2rem 3rem; display: flex; align-items: center; justify-content: space-around; border-top: 1px solid #1f1f1f; border-bottom: 1px solid #1f1f1f; flex-wrap: wrap; gap: 1.5rem; }
+  .brand-item { color: #555; font-size: 1.1rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
+  .brand-item:hover { color: var(--green); }
+
+  /* SECTION COMMON */
+  section { padding: 5rem 3rem; }
+  .section-title { text-align: center; margin-bottom: 3rem; }
+  .section-title h2 { font-size: 2.5rem; font-weight: 800; }
+  .section-title h2 span { color: var(--green); }
+  .section-title p { color: #888; margin-top: 0.75rem; font-size: 0.95rem; }
+
+  /* FITNESS PLANS */
+  .fitness { background: var(--dark); }
+  .plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid #222; }
+  .plan-card {
+    padding: 2.5rem 2rem; border: 1px solid #1e1e1e; text-align: center;
+    transition: background 0.3s; cursor: default; position: relative;
+  }
+  .plan-card:hover { background: #111; }
+  .plan-card.featured { border-color: var(--green); background: #050f00; }
+  .plan-icon { width: 60px; height: 60px; margin: 0 auto 1.2rem; }
+  .plan-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .plan-card p { color: #777; font-size: 0.85rem; line-height: 1.6; }
+  .plan-badge { position: absolute; top: 1rem; right: 1rem; background: var(--green); color: #000; font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 3px; }
+
+  /* SVG icons */
+  .icon-svg { width: 48px; height: 48px; fill: var(--green); }
+
+  /* BURN CALORIES */
+  .burn { background: var(--dark2); display: flex; align-items: center; gap: 4rem; }
+  .burn-text { flex: 1; }
+  .burn-text h2 { font-size: 2.4rem; font-weight: 800; line-height: 1.2; }
+  .burn-text h2 span { color: var(--green); }
+  .burn-text p { color: #888; margin: 1.2rem 0 1.8rem; line-height: 1.7; font-size: 0.95rem; }
+  .burn-image { flex: 1; height: 450px; background: #111; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; }
+  .burn-image img { width: 100%; height: 100%; object-fit: cover; opacity: 0.9; }
+
+  /* PRICING */
+  .pricing { background: var(--dark); }
+  .pricing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .price-card {
+    background: var(--dark3); border: 1px solid #222; border-radius: 8px;
+    padding: 2rem; text-align: center; transition: all 0.3s;
+  }
+  .price-card:hover { border-color: var(--green); transform: translateY(-4px); }
+  .price-card.popular { border-color: var(--green); background: #060f00; }
+  .plan-name { font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; color: var(--green); margin-bottom: 0.5rem; }
+  .price-card h3 { font-size: 2.8rem; font-weight: 900; }
+  .price-card h3 span { font-size: 1rem; color: #888; font-weight: 400; }
+  .price-card ul { list-style: none; margin: 1.5rem 0; text-align: left; }
+  .price-card li { padding: 0.5rem 0; font-size: 0.9rem; color: #ccc; border-bottom: 1px solid #1f1f1f; display: flex; gap: 0.5rem; align-items: center; }
+  .check { color: var(--green); font-size: 1rem; }
+  .popular-badge { background: var(--green); color: #000; font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.75rem; border-radius: 20px; margin-bottom: 1rem; display: inline-block; }
+
+  /* TRAINERS */
+  .trainers { background: var(--dark2); }
+  .trainers-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .trainer-card { background: var(--dark3); border-radius: 8px; overflow: hidden; border: 1px solid #1f1f1f; transition: all 0.3s; }
+  .trainer-card:hover { border-color: var(--green); transform: translateY(-4px); }
+  .trainer-img { height: 220px; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .trainer-img img { width: 100%; height: 100%; object-fit: cover; }
+  .trainer-info { padding: 1rem; }
+  .trainer-info h4 { font-size: 1rem; font-weight: 700; }
+  .trainer-info p { color: var(--green); font-size: 0.8rem; margin-top: 0.2rem; }
+
+  /* TESTIMONIALS */
+  .testimonials { background: var(--dark); }
+  .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .testi-card { background: var(--dark3); border: 1px solid #1f1f1f; border-radius: 8px; padding: 1.8rem; transition: border-color 0.3s; }
+  .testi-card:hover { border-color: var(--green); }
+  .stars { color: var(--green); font-size: 1rem; margin-bottom: 0.75rem; }
+  .testi-card p { color: #aaa; font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.2rem; font-style: italic; }
+  .testi-author { display: flex; align-items: center; gap: 0.75rem; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: #000; font-weight: 700; font-size: 0.85rem; }
+  .testi-author h5 { font-size: 0.95rem; font-weight: 700; }
+  .testi-author span { color: #666; font-size: 0.8rem; }
+
+  /* BRANDS MARQUEE */
+  .brands-strip{background:#0a0a0a;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:.9rem 0;overflow:hidden;}
+  .marquee-track{display:flex;gap:4rem;animation:marquee 20s linear infinite;white-space:nowrap;}
+  .marquee-track span{color:#3a3a3a;font-size:1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;flex-shrink:0;}
+  .marquee-track span.dot{color:var(--g);font-size:1.2rem;}
+  @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .brands-stripp{background:#0a0a0a;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:.9rem 0;overflow:hidden;}
+  .marquee-trackk{display:flex;gap:4rem;animation:marquee-reverse 20s linear infinite;white-space:nowrap;}
+  .marquee-trackk span{color:#3a3a3a;font-size:1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;flex-shrink:0;}
+  .marquee-trackk span.dot{color:var(--g);font-size:1.2rem;}
+  @keyframes marquee-reverse{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+
+  /* INSTA / CTA */
+  .cta-section { background: linear-gradient(135deg, #050f00, #0a1a00); padding: 5rem 3rem; text-align: center; border-top: 1px solid #1e2e0a; }
+  .cta-section h2 { font-size: 3rem; font-weight: 900; }
+  .cta-section h2 span { color: var(--green); }
+  .cta-section p { color: #888; margin: 1rem auto 2rem; max-width: 500px; line-height: 1.7; }
+
+  /* FOOTER */
+  footer { background: #080808; border-top: 1px solid #1a1a1a; padding: 3rem; }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; }
+  .footer-brand p { color: #666; font-size: 0.85rem; line-height: 1.7; margin-top: 0.75rem; max-width: 240px; }
+  .footer-col h5 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); margin-bottom: 1rem; }
+  .footer-col ul { list-style: none; }
+  .footer-col li { padding: 0.35rem 0; }
+  .footer-col a { color: #666; text-decoration: none; font-size: 0.875rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--green); }
+  .footer-bottom { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid #1a1a1a; display: flex; justify-content: space-between; align-items: center; }
+  .footer-bottom p { color: #444; font-size: 0.8rem; }
+  .social-links { display: flex; gap: 0.75rem; }
+  .social-btn { width: 34px; height: 34px; border: 1px solid #2a2a2a; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #666; font-size: 0.75rem; text-decoration: none; transition: all 0.2s; }
+  .social-btn:hover { border-color: var(--green); color: var(--green); }
+
+  /* Decorative lines */
+  .deco-line { width: 60px; height: 3px; background: var(--green); margin: 0.75rem auto 0; }
+  .deco-line-left { margin: 0.75rem 0 0; }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero h1 { font-size: 2.8rem; }
+    .hero-image { display: none; }
+    .hero { min-height: auto; padding: 7rem 1.5rem 3rem; justify-content: center; }
+    .hero-content { margin-right: 0; text-align: center; }
+    .hero-btns { justify-content: center; }
+    .hero-stats { justify-content: center; }
+    section { padding: 3rem 1.5rem; }
+    .plans-grid, .pricing-grid, .trainers-grid, .testi-grid { grid-template-columns: 1fr; }
+    .burn { flex-direction: column; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .brands { padding: 1.5rem; }
+  }
+
+/* UPDATED TRAINING VIDEOS SECTION */
+.live-section { 
+    background: var(--dark); 
+    padding: 5rem 3rem 0; 
+}
+
+/* SECTION BASE */
+section{padding:5rem 3rem;}
+.sec-title{text-align:center;margin-bottom:3rem;}
+.sec-title .tag{display:inline-block;color:var(--g);font-size:.7rem;letter-spacing:3px;text-transform:uppercase;border-bottom:1px solid var(--g);padding-bottom:.3rem;margin-bottom:.8rem;}
+.sec-title h2{font-size:2.8rem;font-weight:900;text-transform:uppercase;}
+.sec-title h2 span{color:var(--g);}
+.sec-title p{color:#777;margin-top:.75rem;font-size:.9rem;}
+.green-line{width:50px;height:2px;background:var(--g);margin:.8rem auto 0;}
+
+/* Hidden as it is replaced by the border-bottom on the tag */
+.green-line { display: none; }
+.results-section {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 50px 20px;
+        text-align: center;
+    }
+
+    /* Header styling */
+    .results-header h2 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+
+    .results-header h2 span {
+        color: #ffcc00; /* Matching the yellow color */
+    }
+
+    .results-header p {
+        font-size: 1.1rem;
+        color: #888;
+        margin-top: 0;
+        margin-bottom: 40px;
+    }
+
+    /* The video grid - updated for 4 videos */
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Key change for 4 videos */
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    /* Styling for each video card */
+    .video-card {
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+        background-color: #1a1a1a;
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* The video element itself */
+    .video-card video {
+        width: 100%;
+        height: 600px; /* Matching the approximate original height */
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Video overlay (for the text) */
+    .video-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        text-align: left;
+    }
+
+    .video-info h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: white;
+    }
+
+    .video-info .featured-label {
+        color: #ffcc00;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 5px;
+    }
+
+    /* Floating action buttons */
+    .floating-buttons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 1000;
+    }
+
+    .float-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+        color: white;
+        transition: transform 0.2s ease;
+        text-decoration: none;
+    }
+
+    .float-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .whatsapp-btn {
+        background-color: #25D366;
+    }
+
+    .call-btn {
+        background-color: #007bff; /* Example blue call button */
+    }
+
+    /* Icon placeholders (replace with your icon font) */
+    .float-btn i {
+        font-size: 1.5rem;
+    }
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">LIFT<span>nFIT</span></div>
+  <ul class="nav-links">
+    <li><a href="#" class="active">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Programs</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="nav-right"></div>
+</nav>
+
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">&#9889; HIGH INTENSITY WORKOUT TO BURN CALORIES</div>
+    <h1>Transform<br><span>Your Body</span></h1>
+    <p>Achieve your fitness goals with expert trainers, cutting-edge equipment, and personalized programs designed just for you. Your journey starts today.</p>
+    <div class="hero-btns">
+      <button class="btn-main">Get Started</button>
+      <button class="btn-ghost">&#9654; Watch Preview</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><h3>1.2K+</h3><p>Active Members</p></div>
+      <div class="stat"><h3>50+</h3><p>Expert Trainers</p></div>
+      <div class="stat"><h3>15+</h3><p>Programs</p></div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1581009137042-c552e485697a?w=900&q=80">
+      <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</section>
+
+<div class="brands-strip">
+  <div class="marquee-track">
+    <span>ASICS</span><span class="dot"></span><span>ALLIANZ</span><span class="dot"></span><span>DIADORA</span><span class="dot"></span><span>HERBALIFE</span><span class="dot"></span><span>NIKE</span><span class="dot"></span><span>REEBOK</span><span class="dot"></span><span>UNDER ARMOUR</span><span class="dot"></span><span>ASICS</span><span class="dot"></span><span>ALLIANZ</span><span class="dot"></span><span>DIADORA</span><span class="dot"></span><span>HERBALIFE</span><span class="dot"></span><span>NIKE</span><span class="dot"></span><span>REEBOK</span><span class="dot"></span><span>UNDER ARMOUR</span><span class="dot"></span>
+  </div>
+</div>
+<div class="brands-stripp">
+  <div class="marquee-trackk">
+    <span>ASICS</span><span class="dot"></span><span>ALLIANZ</span><span class="dot"></span><span>DIADORA</span><span class="dot"></span><span>HERBALIFE</span><span class="dot"></span><span>NIKE</span><span class="dot"></span><span>REEBOK</span><span class="dot"></span><span>UNDER ARMOUR</span><span class="dot"></span><span>ASICS</span><span class="dot"></span><span>ALLIANZ</span><span class="dot"></span><span>DIADORA</span><span class="dot"></span><span>HERBALIFE</span><span class="dot"></span><span>NIKE</span><span class="dot"></span><span>REEBOK</span><span class="dot"></span><span>UNDER ARMOUR</span><span class="dot"></span>
+  </div>
+</div>
+
+<!-- LIVE / TRAINING VIDEO SECTION -->
+<section class="live-section" id="videos">
+  <div class="sec-title">
+    <div class="tag"><font color="#7fff00">Inside FitForce</font></div>
+    <h2>Training <span><font color="#7fff00">Videos</font></span></h2>
+    <div class="green-line"></div>
+    <p>See our members and trainers in action — real sessions, real results</p>
+  </div>
+  <section class="results-section">
+    <div class="results-header">
+    </div>
+
+    <div class="video-grid">
+        <div class="video-card">
+            <video autoplay muted loop playsinline>
+                <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h3>Transformation 1</h3>
+                <div class="featured-label">FEATURED</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <video autoplay muted loop playsinline>
+                <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h3>Transformation 2</h3>
+                <div class="featured-label">FEATURED</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <video autoplay muted loop playsinline>
+                <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h3>Transformation 3</h3>
+                <div class="featured-label">FEATURED</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <video autoplay muted loop playsinline>
+                <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h3>Transformation 4</h3>
+                <div class="featured-label">FEATURED</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="fitness">
+  <div class="section-title">
+    <h2>Fitness Plans & <span>Nutritions</span></h2>
+    <div class="deco-line"></div>
+    <p>Expert-designed programs for every fitness goal and body type</p>
+  </div>
+  <div class="plans-grid">
+    <div class="plan-card">
+      <svg class="icon-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="14" r="8" fill="none" stroke="#7FFF00" stroke-width="3"/>
+        <path d="M20 36 Q32 28 44 36 L44 56 L20 56 Z" fill="#7FFF00" opacity="0.8"/>
+        <path d="M10 40 L20 36 M44 36 L54 40" stroke="#7FFF00" stroke-width="3" stroke-linecap="round"/>
+        <path d="M5 38 L10 40 M54 40 L59 38" stroke="#7FFF00" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <h3>Weight Loss</h3>
+      <p>Targeted cardio and HIIT workouts designed to burn fat efficiently and boost your metabolism for lasting results.</p>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="plan-badge">POPULAR</div>
+      <svg class="icon-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="20" r="10" fill="none" stroke="#7FFF00" stroke-width="3"/>
+        <path d="M18 44 Q32 34 46 44" fill="none" stroke="#7FFF00" stroke-width="3"/>
+        <line x1="32" y1="34" x2="32" y2="58" stroke="#7FFF00" stroke-width="3"/>
+        <circle cx="20" cy="50" r="5" fill="none" stroke="#7FFF00" stroke-width="2.5"/>
+        <circle cx="44" cy="50" r="5" fill="none" stroke="#7FFF00" stroke-width="2.5"/>
+      </svg>
+      <h3>Classic Yoga</h3>
+      <p>Improve flexibility, balance, and mental clarity. Perfect for stress relief and building a strong mind-body connection.</p>
+    </div>
+
+    <div class="plan-card">
+      <svg class="icon-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="52" r="8" fill="none" stroke="#7FFF00" stroke-width="3"/>
+        <circle cx="46" cy="52" r="8" fill="none" stroke="#7FFF00" stroke-width="3"/>
+        <path d="M26 52 L38 52" stroke="#7FFF00" stroke-width="2"/>
+        <path d="M38 52 L44 30 L28 30 L18 52" fill="none" stroke="#7FFF00" stroke-width="3" stroke-linejoin="round"/>
+        <path d="M28 30 L32 14 L40 30" fill="none" stroke="#7FFF00" stroke-width="2.5"/>
+        <circle cx="32" cy="10" r="5" fill="none" stroke="#7FFF00" stroke-width="2.5"/>
+      </svg>
+      <h3>Cycling</h3>
+      <p>High-energy indoor cycling sessions that push your limits, building endurance and torching calories fast.</p>
+    </div>
+
+    <div class="plan-card">
+      <svg class="icon-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 32 L48 32" stroke="#7FFF00" stroke-width="4" stroke-linecap="round"/>
+        <path d="M8 32 L16 32 M48 32 L56 32" stroke="#7FFF00" stroke-width="5" stroke-linecap="round"/>
+        <circle cx="8" cy="32" r="4" fill="#7FFF00"/>
+        <circle cx="56" cy="32" r="4" fill="#7FFF00"/>
+        <rect x="22" y="24" width="20" height="16" rx="3" fill="#7FFF00" opacity="0.2" stroke="#7FFF00" stroke-width="2"/>
+      </svg>
+      <h3>Body Building</h3>
+      <p>Progressive resistance training to build muscle mass, strength, and achieve the physique you've always wanted.</p>
+    </div>
+
+    <div class="plan-card featured">
+      <div class="plan-badge">HOT</div>
+      <svg class="icon-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="14" r="7" fill="none" stroke="#7FFF00" stroke-width="3"/>
+        <path d="M24 26 L22 46 L28 44 L32 52 L36 44 L42 46 L40 26 Z" fill="#7FFF00" opacity="0.6" stroke="#7FFF00" stroke-width="2"/>
+        <path d="M24 34 L16 32 M40 34 L48 32" stroke="#7FFF00" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Musculation</h3>
+      <p>Focused strength and hypertrophy training using scientifically proven methods for maximum muscle development.</p>
+    </div>
+
+    <div class="plan-card">
+      <svg class="icon-svg" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="12" r="7" fill="none" stroke="#7FFF00" stroke-width="3"/>
+        <path d="M26 24 L20 48 M38 24 L44 48" stroke="#7FFF00" stroke-width="3" stroke-linecap="round"/>
+        <path d="M22 38 L42 34" stroke="#7FFF00" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M20 48 L26 56 M44 48 L38 56" stroke="#7FFF00" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Fitness Running</h3>
+      <p>Structured running programs from beginner 5K training to marathon prep, customized to your current fitness level.</p>
+    </div>
+  </div>
+</section>
+
+<section class="burn">
+  <div class="burn-text">
+    <h2>Burn Calories<br>And <span>Stay Healthy</span></h2>
+    <div class="deco-line-left deco-line"></div>
+    <p>Our scientifically-backed programs combine high-intensity training with smart nutrition plans. Every session is designed to maximize caloric burn while building functional strength that lasts a lifetime.</p>
+    <ul style="list-style:none; margin-bottom:1.5rem;">
+      <li style="color:#aaa; padding:0.4rem 0; font-size:0.9rem;">&#10003;&nbsp; <span style="color:#7FFF00">Expert</span> certified trainers</li>
+      <li style="color:#aaa; padding:0.4rem 0; font-size:0.9rem;">&#10003;&nbsp; <span style="color:#7FFF00">Personalized</span> nutrition coaching</li>
+      <li style="color:#aaa; padding:0.4rem 0; font-size:0.9rem;">&#10003;&nbsp; <span style="color:#7FFF00">24/7</span> gym access</li>
+      <li style="color:#aaa; padding:0.4rem 0; font-size:0.9rem;">&#10003;&nbsp; <span style="color:#7FFF00">Advanced</span> tracking & analytics</li>
+    </ul>
+    <button class="btn-main">Explore Programs</button>
+  </div>
+  <div class="burn-image">
+    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=700&q=80" alt="Burn calories training" />
+  </div>
+</section>
+
+<section class="pricing">
+  <div class="section-title">
+    <h2>Subscribe To <span>Plan</span></h2>
+    <div class="deco-line"></div>
+    <p>Choose the perfect membership plan for your fitness journey</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="plan-name">Starter</div>
+      <h3>$29<span>/mo</span></h3>
+      <ul>
+        <li><span class="check">&#10003;</span> Gym Access (Mon-Fri)</li>
+        <li><span class="check">&#10003;</span> 2 Group Classes / Week</li>
+        <li><span class="check">&#10003;</span> Locker Room Access</li>
+        <li><span class="check">&#10003;</span> Fitness Assessment</li>
+        <li style="color:#444"><span style="color:#444">&#10007;</span> Personal Training</li>
+        <li style="color:#444"><span style="color:#444">&#10007;</span> Nutrition Plan</li>
+      </ul>
+      <button class="btn-outline" style="width:100%">Get Started</button>
+    </div>
+
+    <div class="price-card popular">
+      <div class="popular-badge">MOST POPULAR</div>
+      <div class="plan-name">Pro</div>
+      <h3>$59<span>/mo</span></h3>
+      <ul>
+        <li><span class="check">&#10003;</span> 24/7 Gym Access</li>
+        <li><span class="check">&#10003;</span> Unlimited Group Classes</li>
+        <li><span class="check">&#10003;</span> 4 PT Sessions / Month</li>
+        <li><span class="check">&#10003;</span> Nutrition Coaching</li>
+        <li><span class="check">&#10003;</span> Body Composition Analysis</li>
+        <li style="color:#444"><span style="color:#444">&#10007;</span> Priority Booking</li>
+      </ul>
+      <button class="btn-green" style="width:100%; padding:0.75rem">Get Started</button>
+    </div>
+
+    <div class="price-card">
+      <div class="plan-name">Elite</div>
+      <h3>$99<span>/mo</span></h3>
+      <ul>
+        <li><span class="check">&#10003;</span> 24/7 Gym Access</li>
+        <li><span class="check">&#10003;</span> Unlimited Group Classes</li>
+        <li><span class="check">&#10003;</span> Daily PT Sessions</li>
+        <li><span class="check">&#10003;</span> Custom Nutrition Plan</li>
+        <li><span class="check">&#10003;</span> Priority Booking</li>
+        <li><span class="check">&#10003;</span> Spa & Recovery Access</li>
+      </ul>
+      <button class="btn-outline" style="width:100%">Get Started</button>
+    </div>
+  </div>
+</section>
+
+<section class="trainers">
+  <div class="section-title">
+    <h2>Join Our <span>Trainers</span></h2>
+    <div class="deco-line"></div>
+    <p>World-class certified professionals dedicated to your success</p>
+  </div>
+  <div class="trainers-grid">
+    <div class="trainer-card">
+      <div class="trainer-img">
+        <img src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=400&q=80" alt="Trainer Marcus" />
+      </div>
+      <div class="trainer-info">
+        <h4>Marcus Webb</h4>
+        <p>Strength & Conditioning</p>
+      </div>
+    </div>
+    <div class="trainer-card">
+      <div class="trainer-img">
+        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&q=80" alt="Trainer Sofia" />
+      </div>
+      <div class="trainer-info">
+        <h4>Sofia Reyes</h4>
+        <p>Yoga & Mindfulness</p>
+      </div>
+    </div>
+    <div class="trainer-card">
+      <div class="trainer-img">
+        <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&q=80" alt="Trainer James" />
+      </div>
+      <div class="trainer-info">
+        <h4>James Okafor</h4>
+        <p>CrossFit & HIIT</p>
+      </div>
+    </div>
+    <div class="trainer-card">
+      <div class="trainer-img">
+        <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80" alt="Trainer Ayla" />
+      </div>
+      <div class="trainer-info">
+        <h4>Ayla Kiran</h4>
+        <p>Nutrition & Wellness</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="testimonials">
+  <div class="section-title">
+    <h2>What Our <span>Happy Clients</span> Say</h2>
+    <div class="deco-line"></div>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p>"FitForce completely transformed my life. I lost 20kg in 4 months and gained confidence I never knew I had. The trainers are incredible and truly care about your progress."</p>
+      <div class="testi-author">
+        <div class="avatar">JM</div>
+        <div>
+          <h5>Jordan Mills</h5>
+          <span>Member since 2023</span>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p>"The yoga and nutrition programs here are world-class. My flexibility improved dramatically within weeks. This isn't just a gym — it's a complete lifestyle transformation center."</p>
+      <div class="testi-author">
+        <div class="avatar">PR</div>
+        <div>
+          <h5>Priya Rajan</h5>
+          <span>Member since 2022</span>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p>"After years of failed gym memberships, FitForce finally cracked the code for me. The personalized approach, the community, and the results speak for themselves. 10/10."</p>
+      <div class="testi-author">
+        <div class="avatar">AK</div>
+        <div>
+          <h5>Alex Kowalski</h5>
+          <span>Member since 2024</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-section">
+  <h2>Start Your <span>Journey Today</span></h2>
+  <p>Join over 1,200 members who've already transformed their bodies and lives. Your first week is on us — no commitments, no excuses.</p>
+  <button class="btn-main" style="font-size:1.1rem; padding:1rem 2.5rem;">Claim Free Week</button>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo" style="font-size:1.3rem">FIT<span style="color:#7FFF00">FORCE</span></div>
+      <p>Building stronger bodies and minds through expert coaching, elite facilities, and an unstoppable community since 2015.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Programs</h5>
+      <ul>
+        <li><a href="#">Weight Loss</a></li>
+        <li><a href="#">Body Building</a></li>
+        <li><a href="#">Yoga Classes</a></li>
+        <li><a href="#">Cycling</a></li>
+        <li><a href="#">Running</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Our Trainers</a></li>
+        <li><a href="#">Testimonials</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="#">hello@fitforce.com</a></li>
+        <li><a href="#">+1 (800) 348-2673</a></li>
+        <li><a href="#">Find a Location</a></li>
+        <li><a href="#">Support</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 FitForce. All rights reserved.</p>
+    <div class="social-links">
+      <a href="#" class="social-btn">in</a>
+      <a href="#" class="social-btn">tw</a>
+      <a href="#" class="social-btn">fb</a>
+      <a href="#" class="social-btn">ig</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.querySelectorAll('a[href="#"]').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+  document.querySelectorAll('.btn-main, .btn-green, .btn-outline, .btn-ghost').forEach(btn => {
+    btn.addEventListener('mousedown', () => btn.style.transform = 'scale(0.97)');
+    btn.addEventListener('mouseup', () => btn.style.transform = '');
+    btn.addEventListener('mouseleave', () => btn.style.transform = '');
+  });
+</script>
+</body>
+</html>
