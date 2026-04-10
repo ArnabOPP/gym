@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitForce Gym</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{--g:#7FFF00;--gd:#5cbd00;--dk:#0d0d0d;--dk2:#111;--dk3:#181818;--dk4:#1e1e1e;--gray:#888;}
+body{font-family:'Segoe UI',sans-serif;background:var(--dk);color:#fff;overflow-x:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;width:100%;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 3rem;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);border-bottom:1px solid #1c1c1c;}
+.logo{font-size:1.6rem;font-weight:900;letter-spacing:2px;}.logo span{color:var(--g);}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:#aaa;text-decoration:none;font-size:0.875rem;letter-spacing:.5px;transition:color .2s;}
+.nav-links a:hover{color:var(--g);}
+.nav-cta{background:var(--g);color:#000;border:none;padding:.55rem 1.5rem;border-radius:4px;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;}
+.nav-cta:hover{background:var(--gd);}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;justify-content:flex-end;padding:7rem 3rem 3rem;position:relative;overflow:hidden;background:linear-gradient(135deg,#0d0d0d 55%,#0f1f00 100%);}
+.hero-content{max-width:550px;z-index:2;margin-right:5%;}
+.hero-badge{display:inline-block;background:var(--g);color:#000;font-size:.7rem;font-weight:700;padding:.3rem .8rem;border-radius:3px;margin-bottom:1.2rem;letter-spacing:1px;}
+.hero h1{font-size:4.5rem;font-weight:900;line-height:1;margin-bottom:.5rem;}
+.hero h1 span{color:var(--g);}
+.hero p{color:#aaa;font-size:1rem;line-height:1.7;margin:1.2rem 0 2rem;max-width:420px;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;}
+.btn-main{background:var(--g);color:#000;border:none;padding:.8rem 2rem;border-radius:4px;font-weight:700;font-size:1rem;cursor:pointer;transition:all .2s;}
+.btn-main:hover{background:var(--gd);transform:translateY(-1px);}
+.btn-ghost{background:transparent;color:#fff;border:1.5px solid #444;padding:.8rem 2rem;border-radius:4px;font-size:1rem;cursor:pointer;transition:all .2s;}
+.btn-ghost:hover{border-color:var(--g);color:var(--g);}
+.hero-image{position:absolute;left:0;top:50%;transform:translateY(-50%);width:60%;height:90vh;overflow:hidden;z-index:1;}
+.hero-image img,.hero-image video{width:100%;height:100%;object-fit:cover;opacity:.6;}
+.hero-image::after{content:'';position:absolute;right:0;top:0;width:50%;height:100%;background:linear-gradient(to left,#0d0d0d,transparent);z-index:1;}
+.hero-stats{display:flex;gap:3rem;margin-top:3rem;}
+.stat h3{font-size:2rem;font-weight:800;color:var(--g);}
+.stat p{font-size:.8rem;color:#888;}
+.scroll-indicator{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:.5rem;color:#555;font-size:.7rem;letter-spacing:1px;}
+.scroll-dot{width:1px;height:50px;background:linear-gradient(to bottom,var(--g),transparent);}
+
+/* MARQUEE BRANDS */
+.brands-strip{background:#0a0a0a;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:.9rem 0;overflow:hidden;}
+.marquee-track{display:flex;gap:4rem;animation:marquee 20s linear infinite;white-space:nowrap;}
+.marquee-track span{color:#3a3a3a;font-size:1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;flex-shrink:0;}
+.marquee-track span.dot{color:var(--g);font-size:1.2rem;}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.brands-stripp{background:#0a0a0a;border-top:1px solid #1a1a1a;border-bottom:1px solid #1a1a1a;padding:.9rem 0;overflow:hidden;}
+.marquee-trackk{display:flex;gap:4rem;animation:marquee-reverse 20s linear infinite;white-space:nowrap;}
+.marquee-trackk span{color:#3a3a3a;font-size:1rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;flex-shrink:0;}
+.marquee-trackk span.dot{color:var(--g);font-size:1.2rem;}
+@keyframes marquee-reverse{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+
+/* SECTION BASE */
+section{padding:5rem 3rem;}
+.sec-title{text-align:center;margin-bottom:3rem;}
+.sec-title .tag{display:inline-block;color:var(--g);font-size:.7rem;letter-spacing:3px;text-transform:uppercase;border-bottom:1px solid var(--g);padding-bottom:.3rem;margin-bottom:.8rem;}
+.sec-title h2{font-size:2.8rem;font-weight:900;text-transform:uppercase;}
+.sec-title h2 span{color:var(--g);}
+.sec-title p{color:#777;margin-top:.75rem;font-size:.9rem;}
+.green-line{width:50px;height:2px;background:var(--g);margin:.8rem auto 0;}
+
+/* TESTIMONIAL MARQUEE */
+.testi-section{background:var(--dk2);padding:4rem 0;overflow:hidden;}
+.testi-section .sec-title{padding:0 3rem;}
+.testi-track{display:flex;gap:1.2rem;animation:marqLeft 30s linear infinite;margin-top:2rem;}
+.testi-track2{animation:marqRight 28s linear infinite;margin-top:1rem;}
+.testi-card{flex-shrink:0;background:var(--dk3);border:1px solid #222;border-radius:6px;padding:1.4rem 1.6rem;width:280px;}
+.testi-card .stars{color:var(--g);font-size:.9rem;margin-bottom:.5rem;}
+.testi-card p{color:#aaa;font-size:.82rem;line-height:1.6;font-style:italic;margin-bottom:.8rem;}
+.testi-card .author{color:#666;font-size:.75rem;font-weight:700;}
+@keyframes marqLeft{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes marqRight{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+
+/* PROGRAMS */
+.programs{background:var(--dk);}
+.programs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#1a1a1a;border:1px solid #1a1a1a;}
+.prog-card{background:var(--dk);padding:2.5rem 2rem;text-align:center;transition:background .3s;cursor:default;position:relative;}
+.prog-card:hover{background:#0a1200;}
+.prog-card.feat{background:#060d00;border:1px solid #2a4000;}
+.prog-icon{font-size:2.5rem;margin-bottom:1rem;display:block;}
+.prog-card h3{font-size:1.05rem;font-weight:700;margin-bottom:.5rem;}
+.prog-card p{color:#666;font-size:.83rem;line-height:1.6;}
+.feat-badge{position:absolute;top:.8rem;right:.8rem;background:var(--g);color:#000;font-size:.6rem;font-weight:800;padding:.2rem .5rem;border-radius:2px;letter-spacing:1px;}
+
+/* LIVE VIDEO SECTION */
+.live-section{background:var(--dk2);}
+/* Container for the entire section */
+    .results-section {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 50px 20px;
+        text-align: center;
+    }
+
+    /* Header styling */
+    .results-header h2 {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+    }
+
+    .results-header h2 span {
+        color: #ffcc00; /* Matching the yellow color */
+    }
+
+    .results-header p {
+        font-size: 1.1rem;
+        color: #888;
+        margin-top: 0;
+        margin-bottom: 40px;
+    }
+
+    /* The video grid - updated for 4 videos */
+    .video-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Key change for 4 videos */
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    /* Styling for each video card */
+    .video-card {
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+        background-color: #1a1a1a;
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* The video element itself */
+    .video-card video {
+        width: 100%;
+        height: 600px; /* Matching the approximate original height */
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Video overlay (for the text) */
+    .video-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+        text-align: left;
+    }
+
+    .video-info h3 {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: white;
+    }
+
+    .video-info .featured-label {
+        color: #ffcc00;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        margin-top: 5px;
+    }
+
+    /* Floating action buttons */
+    .floating-buttons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        z-index: 1000;
+    }
+
+    .float-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        cursor: pointer;
+        color: white;
+        transition: transform 0.2s ease;
+        text-decoration: none;
+    }
+
+    .float-btn:hover {
+        transform: scale(1.1);
+    }
+
+    .whatsapp-btn {
+        background-color: #25D366;
+    }
+
+    .call-btn {
+        background-color: #007bff; /* Example blue call button */
+    }
+
+    /* Icon placeholders (replace with your icon font) */
+    .float-btn i {
+        font-size: 1.5rem;
+    }
+
+/* GALLERY */
+.gallery-section{background:var(--dk);padding:5rem 3rem;}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:auto auto;gap:8px;}
+.gal-item{overflow:hidden;border-radius:4px;position:relative;cursor:pointer;}
+.gal-item img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.gal-item:hover img{transform:scale(1.06);}
+.gal-item::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.5),transparent);opacity:0;transition:opacity .3s;}
+.gal-item:hover::after{opacity:1;}
+.gal-big{grid-column:span 2;grid-row:span 2;}
+.gal-tall{grid-row:span 2;}
+.gal-item img{height:100%;min-height:180px;}
+.gal-big img{min-height:380px;}
+
+/* BURN SECTION */
+.burn{background:var(--dk2);display:flex;align-items:center;gap:4rem;padding:5rem 3rem;}
+.burn-text{flex:1;}
+.burn-text h2{font-size:2.5rem;font-weight:900;text-transform:uppercase;line-height:1.1;}
+.burn-text h2 span{color:var(--g);}
+.burn-text p{color:#888;margin:1.2rem 0 1.8rem;line-height:1.8;font-size:.95rem;}
+.burn-checklist{list-style:none;margin-bottom:2rem;}
+.burn-checklist li{color:#aaa;padding:.45rem 0;font-size:.9rem;display:flex;align-items:center;gap:.6rem;border-bottom:1px solid #1a1a1a;}
+.burn-checklist li:last-child{border:none;}
+.ck{color:var(--g);font-size:1rem;}
+.burn-img{flex:1;height:480px;border-radius:8px;overflow:hidden;border:1px solid #1e1e1e;}
+.burn-img img{width:100%;height:100%;object-fit:cover;}
+
+/* HOURS */
+.hours-section{background:var(--dk);padding:5rem 3rem;}
+.hours-wrap{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start;}
+.hours-text h2{font-size:2.5rem;font-weight:900;text-transform:uppercase;}
+.hours-text h2 span{color:var(--g);}
+.hours-text p{color:#777;margin:1rem 0 2rem;line-height:1.7;font-size:.9rem;}
+.hours-quote{border-left:3px solid var(--g);padding-left:1rem;color:#999;font-style:italic;font-size:.9rem;line-height:1.6;margin-bottom:2rem;}
+.hours-table{width:100%;border-collapse:collapse;}
+.hours-table tr{border-bottom:1px solid #1a1a1a;}
+.hours-table td{padding:.75rem .5rem;font-size:.88rem;}
+.hours-table td:first-child{color:#888;}
+.hours-table td:last-child{color:var(--g);font-weight:700;text-align:right;}
+.hours-table tr.closed td:last-child{color:#e05555;}
+.tip-box{background:#0a1200;border:1px solid #2a4000;border-radius:6px;padding:1.2rem;margin-top:1.5rem;}
+.tip-box h5{color:var(--g);font-size:.8rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:.5rem;}
+.tip-box p{color:#777;font-size:.82rem;line-height:1.6;}
+
+/* PRICING */
+.pricing{background:var(--dk2);}
+.pricing-tabs{display:flex;justify-content:center;gap:0;margin-bottom:3rem;border:1px solid #2a2a2a;border-radius:6px;overflow:hidden;width:fit-content;margin-left:auto;margin-right:auto;}
+.ptab{background:transparent;border:none;color:#888;padding:.65rem 2rem;font-size:.875rem;cursor:pointer;transition:all .2s;font-weight:600;}
+.ptab.active{background:var(--g);color:#000;}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;}
+.price-card{background:var(--dk3);border:1px solid #222;border-radius:8px;padding:2rem 1.5rem;text-align:center;transition:all .3s;}
+.price-card:hover{border-color:var(--g);transform:translateY(-4px);}
+.price-card.pop{border-color:var(--g);background:#060f00;}
+.plan-label{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-bottom:.5rem;}
+.price-card h3{font-size:2.6rem;font-weight:900;}
+.price-card h3 sup{font-size:1rem;font-weight:400;color:#888;vertical-align:super;}
+.price-card h3 span{font-size:.9rem;color:#666;font-weight:400;}
+.pop-badge{background:var(--g);color:#000;font-size:.65rem;font-weight:800;padding:.2rem .8rem;border-radius:20px;display:inline-block;margin-bottom:.5rem;letter-spacing:.5px;}
+.price-card ul{list-style:none;margin:1.2rem 0;text-align:left;}
+.price-card li{padding:.45rem 0;font-size:.83rem;color:#aaa;border-bottom:1px solid #1a1a1a;display:flex;gap:.5rem;}
+.price-card li:last-child{border:none;}
+.ck2{color:var(--g);}
+.price-note{color:#555;font-size:.75rem;margin-top:.8rem;}
+.btn-card{width:100%;padding:.7rem;border-radius:4px;font-weight:700;font-size:.85rem;cursor:pointer;transition:all .2s;margin-top:.8rem;}
+.btn-card-g{background:var(--g);color:#000;border:none;}
+.btn-card-g:hover{background:var(--gd);}
+.btn-card-o{background:transparent;color:var(--g);border:1.5px solid var(--g);}
+.btn-card-o:hover{background:var(--g);color:#000;}
+
+/* TRAINERS */
+.trainers{background:var(--dk);}
+.trainers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;}
+.trainer-card{background:var(--dk3);border:1px solid #1e1e1e;border-radius:8px;overflow:hidden;transition:all .3s;}
+.trainer-card:hover{border-color:var(--g);transform:translateY(-4px);}
+.t-img{height:230px;overflow:hidden;}
+.t-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s;}
+.trainer-card:hover .t-img img{transform:scale(1.05);}
+.t-info{padding:1.2rem;}
+.t-info h4{font-size:1rem;font-weight:700;}
+.t-info p{color:var(--g);font-size:.78rem;margin-top:.25rem;}
+.t-info .t-exp{color:#555;font-size:.75rem;margin-top:.2rem;}
+
+/* BRANCHES */
+.branches{background:var(--dk2);}
+.branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;}
+.branch-card{background:var(--dk3);border:1px solid #222;border-radius:8px;overflow:hidden;transition:border-color .3s;}
+.branch-card:hover{border-color:var(--g);}
+.branch-map{height:220px;background:#111;overflow:hidden;}
+.branch-map iframe{width:100%;height:100%;border:none;filter:grayscale(80%) invert(10%) brightness(0.8);}
+.branch-info{padding:1.8rem;}
+.branch-info h3{font-size:1.2rem;font-weight:800;}
+.branch-info .rating{display:flex;align-items:center;gap:.5rem;margin:.5rem 0 1rem;}
+.branch-info .stars-s{color:var(--g);font-size:.85rem;}
+.branch-info .rev-count{color:#555;font-size:.8rem;}
+.branch-detail{display:flex;align-items:flex-start;gap:.6rem;color:#888;font-size:.83rem;margin:.4rem 0;line-height:1.5;}
+.branch-detail .ico{color:var(--g);font-size:.9rem;flex-shrink:0;margin-top:1px;}
+.amenity-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;}
+.tag-pill{background:#1a2a00;color:var(--g);font-size:.7rem;padding:.25rem .7rem;border-radius:20px;border:1px solid #2a4000;}
+.branch-info a{display:inline-block;background:var(--g);color:#000;text-decoration:none;padding:.6rem 1.4rem;border-radius:4px;font-weight:700;font-size:.8rem;margin-top:.5rem;transition:background .2s;}
+.branch-info a:hover{background:var(--gd);}
+
+/* CTA */
+.cta-sec{background:linear-gradient(135deg,#050f00,#0a1f00);padding:5rem 3rem;text-align:center;border-top:1px solid #1e2e0a;border-bottom:1px solid #1e2e0a;}
+.cta-sec h2{font-size:3.2rem;font-weight:900;text-transform:uppercase;}
+.cta-sec h2 span{color:var(--g);}
+.cta-sec p{color:#888;margin:1rem auto 2.5rem;max-width:480px;line-height:1.7;font-size:.95rem;}
+
+/* FOOTER */
+footer{background:#080808;border-top:1px solid #141414;padding:3.5rem 3rem 2rem;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;}
+.f-brand p{color:#555;font-size:.83rem;line-height:1.8;margin-top:.75rem;max-width:240px;}
+.f-col h5{font-size:.75rem;letter-spacing:2px;text-transform:uppercase;color:var(--g);margin-bottom:1rem;}
+.f-col ul{list-style:none;}
+.f-col li{padding:.3rem 0;}
+.f-col a{color:#555;text-decoration:none;font-size:.85rem;transition:color .2s;}
+.f-col a:hover{color:var(--g);}
+.footer-bottom{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid #141414;display:flex;justify-content:space-between;align-items:center;}
+.footer-bottom p{color:#333;font-size:.78rem;}
+.socials{display:flex;gap:.6rem;}
+.soc-btn{width:34px;height:34px;border:1px solid #222;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#555;font-size:.72rem;text-decoration:none;transition:all .2s;}
+.soc-btn:hover{border-color:var(--g);color:var(--g);}
+
+@media(max-width:900px){
+  nav{padding:1rem 1.5rem;}
+  .nav-links{display:none;}
+  .hero h1{font-size:2.8rem;}
+  .hero-image{display:none;}
+  .hero{min-height:auto;padding:7rem 1.5rem 3rem;justify-content:center;}
+  .hero-content{margin-right:0;text-align:center;}
+  .hero-btns{justify-content:center;}
+  .hero-stats{justify-content:center;}
+  section,.burn,.hours-section,.gallery-section{padding:3rem 1.5rem;}
+  .programs-grid,.video-grid,.pricing-grid,.trainers-grid,.branch-grid,.footer-grid{grid-template-columns:1fr;}
+  .burn{flex-direction:column;}
+  .hours-wrap{grid-template-columns:1fr;}
+  .gallery-grid{grid-template-columns:repeat(2,1fr);}
+  .gal-big{grid-column:span 2;}
+}
+
+/* Branch map placeholder */
+.map-placeholder{width:100%;height:100%;background:#111;display:flex;align-items:center;justify-content:center;color:#333;font-size:2rem;}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">FIT<span>FORCE</span></div>
+  <ul class="nav-links">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Programs</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Pricing</a></li>
+    <li><a href="#">Branches</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <button class="nav-cta">Start Training</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">&#9889; HIGH INTENSITY WORKOUT TO BURN CALORIES</div>
+    <h1>Transform<br><span>Your Body</span></h1>
+    <p>Achieve your fitness goals with expert trainers, cutting-edge equipment, and personalized programs designed just for you. Your journey starts today.</p>
+    <div class="hero-btns">
+      <button class="btn-main">Get Started</button>
+      <button class="btn-ghost">&#9654; Watch Preview</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><h3>1.2K+</h3><p>Active Members</p></div>
+      <div class="stat"><h3>50+</h3><p>Expert Trainers</p></div>
+      <div class="stat"><h3>15+</h3><p>Programs</p></div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <video autoplay muted loop playsinline poster="https://images.unsplash.com/photo-1581009137042-c552e485697a?w=900&q=80">
+      <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+</section>
+
+<!-- BRANDS MARQUEE -->
+<div class="brands-strip">
+  <div class="marquee-track">
+    <span>ASICS</span><span class="dot"></span><span>ALLIANZ</span><span class="dot"></span><span>DIADORA</span><span class="dot"></span><span>HERBALIFE</span><span class="dot"></span><span>NIKE</span><span class="dot"></span><span>REEBOK</span><span class="dot"></span><span>UNDER ARMOUR</span><span class="dot"></span><span>ASICS</span><span class="dot"></span><span>ALLIANZ</span><span class="dot"></span><span>DIADORA</span><span class="dot"></span><span>HERBALIFE</span><span class="dot"></span><span>NIKE</span><span class="dot"></span><span>REEBOK</span><span class="dot"></span><span>UNDER ARMOUR</span><span class="dot"></span>
+  </div>
+</div>
+<div class="brands-stripp">
+  <div class="marquee-trackk">
+    <span>ASICS</span><span class="dot"></span><span>ALLIANZ</span><span class="dot"></span><span>DIADORA</span><span class="dot"></span><span>HERBALIFE</span><span class="dot"></span><span>NIKE</span><span class="dot"></span><span>REEBOK</span><span class="dot"></span><span>UNDER ARMOUR</span><span class="dot"></span><span>ASICS</span><span class="dot"></span><span>ALLIANZ</span><span class="dot"></span><span>DIADORA</span><span class="dot"></span><span>HERBALIFE</span><span class="dot"></span><span>NIKE</span><span class="dot"></span><span>REEBOK</span><span class="dot"></span><span>UNDER ARMOUR</span><span class="dot"></span>
+  </div>
+</div>
+
+<!-- PROGRAMS -->
+<section class="programs" id="programs">
+  <div class="sec-title">
+    <div class="tag">What We Offer</div>
+    <h2>Fitness Plans & <span>Nutrition</span></h2>
+    <div class="green-line"></div>
+    <p>Expert-designed programs tailored to every goal and fitness level</p>
+  </div>
+  <div class="programs-grid">
+    <div class="prog-card">
+      <span class="prog-icon">🏋️</span>
+      <h3>Weight Loss</h3>
+      <p>Targeted HIIT and cardio workouts that torch fat, boost metabolism, and deliver visible results within weeks.</p>
+    </div>
+    <div class="prog-card feat">
+      <div class="feat-badge">POPULAR</div>
+      <span class="prog-icon">🧘</span>
+      <h3>Classic Yoga</h3>
+      <p>Build flexibility, balance, and mental clarity with certified yoga instructors guiding every session.</p>
+    </div>
+    <div class="prog-card">
+      <span class="prog-icon">🚴</span>
+      <h3>Cycling</h3>
+      <p>High-energy indoor cycling that builds endurance and burns serious calories — all to pounding music.</p>
+    </div>
+    <div class="prog-card feat">
+      <div class="feat-badge">HOT</div>
+      <span class="prog-icon">💪</span>
+      <h3>Body Building</h3>
+      <p>Progressive resistance training designed to build muscle mass, definition, and lasting strength.</p>
+    </div>
+    <div class="prog-card">
+      <span class="prog-icon">🥊</span>
+      <h3>Musculation</h3>
+      <p>Science-backed hypertrophy and strength protocols for maximum muscle growth and peak performance.</p>
+    </div>
+    <div class="prog-card">
+      <span class="prog-icon">🏃</span>
+      <h3>Fitness Running</h3>
+      <p>Structured programs from beginner 5K to marathon prep, built around your pace and schedule.</p>
+    </div>
+  </div>
+</section>
+
+<!-- LIVE / TRAINING VIDEO SECTION -->
+<section class="live-section" id="videos">
+  <div class="sec-title">
+    <div class="tag">Inside FitForce</div>
+    <h2>Training <span>Videos</span></h2>
+    <div class="green-line"></div>
+    <p>See our members and trainers in action — real sessions, real results</p>
+  </div>
+  <section class="results-section">
+    <div class="results-header">
+    </div>
+
+    <div class="video-grid">
+        <div class="video-card">
+            <video autoplay muted loop playsinline>
+                <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h3>Transformation 1</h3>
+                <div class="featured-label">FEATURED</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <video autoplay muted loop playsinline>
+                <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h3>Transformation 2</h3>
+                <div class="featured-label">FEATURED</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <video autoplay muted loop playsinline>
+                <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h3>Transformation 3</h3>
+                <div class="featured-label">FEATURED</div>
+            </div>
+        </div>
+
+        <div class="video-card">
+            <video autoplay muted loop playsinline>
+                <source src="kling_20260410_作品_create_a_4_6093_0 (online-video-cutter.com).mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <h3>Transformation 4</h3>
+                <div class="featured-label">FEATURED</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="floating-buttons">
+    <a href="#" class="float-btn call-btn"><i>📞</i></a> <a href="#" class="float-btn whatsapp-btn"><i>💬</i></a> </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section" id="gallery">
+  <div class="sec-title">
+    <div class="tag">Inside FitForce</div>
+    <h2>Gym <span>Gallery</span></h2>
+    <div class="green-line"></div>
+    <p>Take a look inside — world-class equipment, energizing spaces</p>
+  </div>
+  <div class="gallery-grid">
+    <div class="gal-item gal-big">
+      <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80" alt="Main workout floor" />
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80" alt="Free weights" />
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&q=80" alt="Personal training" />
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=400&q=80" alt="Cardio zone" />
+    </div>
+    <div class="gal-item gal-tall">
+      <img src="https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=400&q=80" alt="Weight rack" style="min-height:360px;" />
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1581009137042-c552e485697a?w=400&q=80" alt="Group class" />
+    </div>
+    <div class="gal-item">
+      <img src="https://images.unsplash.com/photo-1549060279-7e168fcee0c2?w=400&q=80" alt="Boxing zone" />
+    </div>
+  </div>
+</section>
+
+<!-- BURN / WHY JOIN -->
+<div class="burn">
+  <div class="burn-text">
+    <h2>Burn Calories<br>And <span>Stay Healthy</span></h2>
+    <div style="width:50px;height:2px;background:var(--g);margin:.8rem 0;"></div>
+    <p>Our scientifically-backed programs combine high-intensity training with smart nutrition coaching. Every session is engineered to maximize results while minimizing risk of injury.</p>
+    <ul class="burn-checklist">
+      <li><span class="ck">✓</span> Certified expert trainers on the floor every session</li>
+      <li><span class="ck">✓</span> Personalized nutrition and meal coaching</li>
+      <li><span class="ck">✓</span> 6 AM – 11 PM open access, 6 days a week</li>
+      <li><span class="ck">✓</span> Advanced body composition analysis</li>
+      <li><span class="ck">✓</span> Supportive community of 1,200+ members</li>
+    </ul>
+    <button class="btn-main">Explore Programs</button>
+  </div>
+  <div class="burn-img">
+    <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?w=700&q=80" alt="Training hard" />
+  </div>
+</div>
+
+<!-- TESTIMONIALS MARQUEE -->
+<div class="testi-section" id="reviews">
+  <div class="sec-title">
+    <div class="tag">Member Stories</div>
+    <h2>What Our <span>Members Say</span></h2>
+    <div class="green-line"></div>
+  </div>
+  <div style="overflow:hidden;">
+    <div class="testi-track">
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Best gym I've ever joined. Lost 18kg in 5 months and gained a whole new mindset. The trainers are genuinely invested in your success."</p><div class="author">— Rahul M.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"The equipment quality is world-class and the atmosphere is electric. Perfect mix of intensity and community support."</p><div class="author">— Sneha R.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"I was a complete beginner and they made me feel so welcome. 6 months later I'm deadlifting twice my body weight. Mind-blowing."</p><div class="author">— Arjun K.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"The nutrition coaching alone was worth the membership. Finally understand how to eat for my goals. Down 12kg and feeling amazing."</p><div class="author">— Priyanka S.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Premium facility at a price that makes sense. Clean, well-maintained, and the trainers genuinely push you to be your best."</p><div class="author">— Sourav G.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Best investment I've made for my health. The group classes are high energy and the community keeps you accountable."</p><div class="author">— Ankita D.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Best gym I've ever joined. Lost 18kg in 5 months and gained a whole new mindset. The trainers are genuinely invested in your success."</p><div class="author">— Rahul M.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"The equipment quality is world-class and the atmosphere is electric. Perfect mix of intensity and community support."</p><div class="author">— Sneha R.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"I was a complete beginner and they made me feel so welcome. 6 months later I'm deadlifting twice my body weight. Mind-blowing."</p><div class="author">— Arjun K.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"The nutrition coaching alone was worth the membership. Finally understand how to eat for my goals. Down 12kg and feeling amazing."</p><div class="author">— Priyanka S.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Premium facility at a price that makes sense. Clean, well-maintained, and the trainers genuinely push you to be your best."</p><div class="author">— Sourav G.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Best investment I've made for my health. The group classes are high energy and the community keeps you accountable."</p><div class="author">— Ankita D.</div></div>
+    </div>
+    <div class="testi-track testi-track2" style="margin-top:1rem;">
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Amazing atmosphere. The yoga classes here changed my life — I sleep better, think clearer, and feel stronger than ever."</p><div class="author">— Meera T.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"The cycling sessions are absolutely brutal in the best possible way. 45 minutes feels like the best decision of the week every time."</p><div class="author">— Debashis P.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Went from couch to 5K in 8 weeks thanks to the running program. Trainers created a custom plan that actually worked for me."</p><div class="author">— Ritika B.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Great equipment, great trainers, unbeatable results. This gym genuinely delivers on every promise it makes."</p><div class="author">— Arjun N.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Friendly environment that's perfect for beginners but challenging enough for advanced athletes. They've nailed the balance."</p><div class="author">— Kavya L.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"My body transformation in 4 months has shocked everyone including myself. The before/after photos don't feel real. Incredible."</p><div class="author">— Vikram J.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Amazing atmosphere. The yoga classes here changed my life — I sleep better, think clearer, and feel stronger than ever."</p><div class="author">— Meera T.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"The cycling sessions are absolutely brutal in the best possible way. 45 minutes feels like the best decision of the week every time."</p><div class="author">— Debashis P.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Went from couch to 5K in 8 weeks thanks to the running program. Trainers created a custom plan that actually worked for me."</p><div class="author">— Ritika B.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Great equipment, great trainers, unbeatable results. This gym genuinely delivers on every promise it makes."</p><div class="author">— Arjun N.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"Friendly environment that's perfect for beginners but challenging enough for advanced athletes. They've nailed the balance."</p><div class="author">— Kavya L.</div></div>
+      <div class="testi-card"><div class="stars">★★★★★</div><p>"My body transformation in 4 months has shocked everyone including myself. The before/after photos don't feel real. Incredible."</p><div class="author">— Vikram J.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section class="pricing" id="pricing">
+  <div class="sec-title">
+    <div class="tag">Membership</div>
+    <h2>Choose Your <span>Plan</span></h2>
+    <div class="green-line"></div>
+    <p>Transparent pricing — no hidden fees, no lock-ins</p>
+  </div>
+  <div style="display:flex;justify-content:center;margin-bottom:2rem;gap:0;border:1px solid #2a2a2a;border-radius:6px;overflow:hidden;width:fit-content;margin-left:auto;margin-right:auto;" id="branch-tabs">
+    <button class="ptab active" onclick="switchBranch('a',this)">Branch A — North</button>
+    <button class="ptab" onclick="switchBranch('b',this)">Branch B — East</button>
+  </div>
+  <div class="pricing-grid" id="pricing-grid">
+    <div class="price-card">
+      <div class="plan-label">1 Month</div>
+      <h3><sup>₹</sup>1,000</h3>
+      <ul>
+        <li><span class="ck2">✓</span> Full gym access</li>
+        <li><span class="ck2">✓</span> 2 group classes/wk</li>
+        <li><span class="ck2">✓</span> Locker room</li>
+        <li style="color:#333"><span style="color:#333">✗</span> Personal trainer</li>
+      </ul>
+      <p class="price-note">+ ₹500 one-time registration</p>
+      <button class="btn-card btn-card-o">Enroll Now</button>
+    </div>
+    <div class="price-card">
+      <div class="plan-label">3 Months</div>
+      <h3><sup>₹</sup>2,700</h3>
+      <ul>
+        <li><span class="ck2">✓</span> Full gym access</li>
+        <li><span class="ck2">✓</span> Unlimited group classes</li>
+        <li><span class="ck2">✓</span> Locker room</li>
+        <li><span class="ck2">✓</span> Fitness assessment</li>
+      </ul>
+      <p class="price-note">+ ₹500 one-time registration</p>
+      <button class="btn-card btn-card-o">Enroll Now</button>
+    </div>
+    <div class="price-card pop">
+      <div class="pop-badge">MOST POPULAR</div>
+      <div class="plan-label">6 Months</div>
+      <h3><sup>₹</sup>4,500</h3>
+      <ul>
+        <li><span class="ck2">✓</span> 24/7 gym access</li>
+        <li><span class="ck2">✓</span> Unlimited group classes</li>
+        <li><span class="ck2">✓</span> Nutrition coaching</li>
+        <li><span class="ck2">✓</span> Body composition check</li>
+      </ul>
+      <p class="price-note">+ ₹500 one-time registration</p>
+      <button class="btn-card btn-card-g">Enroll Now</button>
+    </div>
+    <div class="price-card">
+      <div class="plan-label">1 Year</div>
+      <h3><sup>₹</sup>6,500</h3>
+      <ul>
+        <li><span class="ck2">✓</span> 24/7 priority access</li>
+        <li><span class="ck2">✓</span> All classes included</li>
+        <li><span class="ck2">✓</span> Full nutrition plan</li>
+        <li><span class="ck2">✓</span> 2 PT sessions/month</li>
+      </ul>
+      <p class="price-note">+ ₹500 one-time registration</p>
+      <button class="btn-card btn-card-o">Enroll Now</button>
+    </div>
+  </div>
+  <p style="text-align:center;color:#555;font-size:.8rem;margin-top:1.5rem;">Personal Trainer add-on: ₹2,500/month</p>
+</section>
+
+<!-- TRAINERS -->
+<section class="trainers" id="trainers">
+  <div class="sec-title">
+    <div class="tag">Our Experts</div>
+    <h2>Join Our <span>Trainers</span></h2>
+    <div class="green-line"></div>
+    <p>World-class certified professionals dedicated to your transformation</p>
+  </div>
+  <div class="trainers-grid">
+    <div class="trainer-card">
+      <div class="t-img"><img src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?w=400&q=80" alt="Marcus" /></div>
+      <div class="t-info"><h4>Marcus Webb</h4><p>Strength & Conditioning</p><div class="t-exp">12 years experience</div></div>
+    </div>
+    <div class="trainer-card">
+      <div class="t-img"><img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=400&q=80" alt="Sofia" /></div>
+      <div class="t-info"><h4>Sofia Reyes</h4><p>Yoga & Mindfulness</p><div class="t-exp">8 years experience</div></div>
+    </div>
+    <div class="trainer-card">
+      <div class="t-img"><img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?w=400&q=80" alt="James" /></div>
+      <div class="t-info"><h4>James Okafor</h4><p>CrossFit & HIIT</p><div class="t-exp">10 years experience</div></div>
+    </div>
+    <div class="trainer-card">
+      <div class="t-img"><img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&q=80" alt="Ayla" /></div>
+      <div class="t-info"><h4>Ayla Kiran</h4><p>Nutrition & Wellness</p><div class="t-exp">6 years experience</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOURS -->
+<section class="hours-section">
+  <div class="hours-wrap">
+    <div class="hours-text">
+      <div class="tag" style="display:inline-block;color:var(--g);font-size:.7rem;letter-spacing:3px;text-transform:uppercase;border-bottom:1px solid var(--g);padding-bottom:.3rem;margin-bottom:.8rem;">Visit Us</div>
+      <h2>Opening <span>Hours</span></h2>
+      <div style="width:50px;height:2px;background:var(--g);margin:.8rem 0 1.2rem;"></div>
+      <div class="hours-quote">"The only bad workout is the one that didn't happen." — Plan your session accordingly.</div>
+      <p>We're open early and close late so you can train on your terms — before work, after work, or anytime in between.</p>
+      <div class="tip-box">
+        <h5>&#9889; Pro Tip</h5>
+        <p>Early morning sessions (6 AM – 8 AM) offer the best focus and energy. Peak hours are 6 PM – 9 PM — come early for more space.</p>
+      </div>
+    </div>
+    <div>
+      <table class="hours-table">
+        <tr><td>Monday</td><td>6:00 AM – 11:00 PM</td></tr>
+        <tr><td>Tuesday</td><td>6:00 AM – 11:00 PM</td></tr>
+        <tr><td>Wednesday</td><td>6:00 AM – 11:00 PM</td></tr>
+        <tr><td>Thursday</td><td>6:00 AM – 11:00 PM</td></tr>
+        <tr><td>Friday</td><td>6:00 AM – 11:00 PM</td></tr>
+        <tr><td>Saturday</td><td>6:00 AM – 11:00 PM</td></tr>
+        <tr class="closed"><td>Sunday</td><td>Closed</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- BRANCHES -->
+<section class="branches" id="branches">
+  <div class="sec-title">
+    <div class="tag">Our Locations</div>
+    <h2>Choose Your <span>Branch</span></h2>
+    <div class="green-line"></div>
+    <p>Two premium locations — find the one nearest to you</p>
+  </div>
+  <div class="branch-grid">
+    <div class="branch-card">
+      <div class="branch-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3683.8!2d88.4200!3d22.6200!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDM3JzEyLjAiTiA4OMKwMjUnMTIuMCJF!5e0!3m2!1sen!2sin!4v1700000000000" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="branch-info">
+        <h3>FitForce — North Branch</h3>
+        <div class="rating"><span class="stars-s">★★★★★</span><span style="color:#fff;font-size:.85rem;font-weight:700;">4.9</span><span class="rev-count">(246 reviews)</span></div>
+        <div class="branch-detail"><span class="ico">📍</span>12 Fitness Avenue, North District, Kolkata, West Bengal 700157</div>
+        <div class="branch-detail"><span class="ico">📞</span>+91 97488 82498</div>
+        <div class="branch-detail"><span class="ico">🕐</span>Mon–Sat: 6:00 AM – 11:00 PM</div>
+        <div class="amenity-tags">
+          <span class="tag-pill">Free Parking</span>
+          <span class="tag-pill">Locker Room</span>
+          <span class="tag-pill">AC Zone</span>
+          <span class="tag-pill">PT Available</span>
+        </div>
+        <a href="#">Get Directions ↗</a>
+      </div>
+    </div>
+    <div class="branch-card">
+      <div class="branch-map">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3684.1!2d88.4100!3d22.6100!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDM2JzM2LjAiTiA4OMKwMjQnMzYuMCJF!5e0!3m2!1sen!2sin!4v1700000000001" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+      <div class="branch-info">
+        <h3>FitForce — East Branch</h3>
+        <div class="rating"><span class="stars-s">★★★★★</span><span style="color:#fff;font-size:.85rem;font-weight:700;">4.9</span><span class="rev-count">(397 reviews)</span></div>
+        <div class="branch-detail"><span class="ico">📍</span>Green Home Complex, East District, Kolkata, West Bengal 700157</div>
+        <div class="branch-detail"><span class="ico">📞</span>+91 90732 74128</div>
+        <div class="branch-detail"><span class="ico">🕐</span>Mon–Sat: 6:00 AM – 11:00 PM</div>
+        <div class="amenity-tags">
+          <span class="tag-pill">Free WiFi</span>
+          <span class="tag-pill">Online Classes</span>
+          <span class="tag-pill">Parking</span>
+          <span class="tag-pill">Unisex</span>
+        </div>
+        <a href="#">Get Directions ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<div class="cta-sec">
+  <h2>Start Your <span>Journey Today</span></h2>
+  <p>Join 1,200+ members who've already transformed their bodies and lives. Your first week is completely free — no commitments.</p>
+  <button class="btn-main" style="font-size:1.1rem;padding:1rem 2.5rem;">Claim Free Week</button>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="f-brand">
+      <div class="logo" style="font-size:1.4rem;">FIT<span style="color:var(--g);">FORCE</span></div>
+      <p>Building stronger bodies and minds through expert coaching, elite facilities, and an unstoppable community since 2015.</p>
+    </div>
+    <div class="f-col">
+      <h5>Programs</h5>
+      <ul>
+        <li><a href="#">Weight Loss</a></li>
+        <li><a href="#">Body Building</a></li>
+        <li><a href="#">Yoga Classes</a></li>
+        <li><a href="#">Cycling</a></li>
+        <li><a href="#">Running</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Our Trainers</a></li>
+        <li><a href="#">Gallery</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Contact</a></li>
+      </ul>
+    </div>
+    <div class="f-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="#"><span class="__cf_email__" data-cfemail="4b232e2727240b2d223f2d2439282e652225">[email&#160;protected]</span></a></li>
+        <li><a href="#">+91 97488 82498</a></li>
+        <li><a href="#">North Branch</a></li>
+        <li><a href="#">East Branch</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2025 FitForce. All rights reserved.</p>
+    <div class="socials">
+      <a href="#" class="soc-btn">in</a>
+      <a href="#" class="soc-btn">yt</a>
+      <a href="#" class="soc-btn">fb</a>
+      <a href="#" class="soc-btn">ig</a>
+    </div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const pricingData = {
+  a: [
+    {label:'1 Month',price:'1,000',features:['Full gym access','2 group classes/wk','Locker room'],missing:'Personal trainer',pop:false},
+    {label:'3 Months',price:'2,700',features:['Full gym access','Unlimited group classes','Locker room','Fitness assessment'],missing:null,pop:false},
+    {label:'6 Months',price:'4,500',features:['24/7 gym access','Unlimited group classes','Nutrition coaching','Body composition check'],missing:null,pop:true},
+    {label:'1 Year',price:'6,500',features:['24/7 priority access','All classes included','Full nutrition plan','2 PT sessions/month'],missing:null,pop:false},
+  ],
+  b: [
+    {label:'1 Month',price:'1,200',features:['Full gym access','2 group classes/wk','Free WiFi'],missing:'Personal trainer',pop:false},
+    {label:'3 Months',price:'3,000',features:['Full gym access','Unlimited group classes','Free WiFi','Fitness assessment'],missing:null,pop:false},
+    {label:'6 Months',price:'5,500',features:['24/7 gym access','Unlimited group classes','Nutrition coaching','Online classes'],missing:null,pop:true},
+    {label:'1 Year',price:'9,000',features:['24/7 priority access','All classes included','Full nutrition plan','2 PT sessions/month'],missing:null,pop:false},
+  ]
+};
+
+function switchBranch(branch, el) {
+  document.querySelectorAll('#branch-tabs .ptab').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const grid = document.getElementById('pricing-grid');
+  const data = pricingData[branch];
+  grid.innerHTML = data.map(d => `
+    <div class="price-card ${d.pop?'pop':''}">
+      ${d.pop?'<div class="pop-badge">MOST POPULAR</div>':''}
+      <div class="plan-label">${d.label}</div>
+      <h3><sup>₹</sup>${d.price}</h3>
+      <ul>
+        ${d.features.map(f=>`<li><span class="ck2">✓</span> ${f}</li>`).join('')}
+        ${d.missing?`<li style="color:#333"><span style="color:#333">✗</span> ${d.missing}</li>`:''}
+      </ul>
+      <p class="price-note">+ ₹500 one-time registration</p>
+      <button class="btn-card ${d.pop?'btn-card-g':
